@@ -9,7 +9,8 @@ import uuid
 import time
 
 app = Flask(__name__)
-app.secret_key = 'your-secret-key-here-change-in-production'
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', 'default-secret-key-change-in-production')
+app.debug = False
 
 # 限流配置
 SINGLE_IP_LIMIT = 3  # 单IP每秒最多访问次数
@@ -496,6 +497,7 @@ def delete_image(image_id):
 
 if __name__ == '__main__':
     init_db()
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    # 仅在开发环境中运行开发服务器
+    app.run(host='0.0.0.0', port=5000)
 
 
