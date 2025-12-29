@@ -2,13 +2,130 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 import sqlite3
 import re
 import os
-from datetime import datetime
+from datetime import datetime, timedelta
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import uuid
+import time
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here-change-in-production'
+
+# 限流配置
+SINGLE_IP_LIMIT = 3  # 单IP每秒最多访问次数
+SINGLE_IP_COOLDOWN = 2  # 单IP冷却时间（秒）
+GLOBAL_IP_LIMIT = 20  # 每秒最大不同IP访问次数
+GLOBAL_IP_COOLDOWN = 1  # 全局超过IP冷却时间（秒）
+TIME_WINDOW = 1  # 时间窗口（秒）
+
+# 存储IP访问记录 {ip: [timestamp1, timestamp2, ...]}
+ip_access_records = {}
+
+# 存储冷却中的IP {ip: end_time}
+cooldown_ips = {}
+
+# 存储全局IP访问记录 [{ip: str, timestamp: float}, ...]
+global_access_records = []
+
+# 中间件：限流
+def rate_limit_middleware():
+    def decorator(f):
+        def wrapped(*args, **kwargs):
+            # 获取客户端IP
+            client_ip = request.remote_addr
+            current_time = time.time()
+            
+            # 检查IP是否在冷却中
+            if client_ip in cooldown_ips:
+                if current_time < cooldown_ips[client_ip]:
+                    return "访问过于频繁，3秒后再试", 429
+                else:
+                    # 冷却时间已过，移除冷却
+                    del cooldown_ips[client_ip]
+            
+            # 清理单IP过期的访问记录
+            if client_ip in ip_access_records:
+                ip_access_records[client_ip] = [t for t in ip_access_records[client_ip] if current_time - t < TIME_WINDOW]
+            else:
+                ip_access_records[client_ip] = []
+            
+            # 清理全局过期的访问记录
+            global global_access_records
+            global_access_records = [t for t in global_access_records if current_time - t < TIME_WINDOW]
+            
+            # 检查单IP访问频率
+            if len(ip_access_records[client_ip]) >= SINGLE_IP_LIMIT:
+                # 单IP超过限制，加入冷却
+                cooldown_ips[client_ip] = current_time + SINGLE_IP_COOLDOWN
+                return "访问过于频繁，3秒后再试", 429
+            
+            # 检查全局IP访问频率（不同IP数量）
+            unique_ips = set()
+            for t in global_access_records:
+                # 这里简化处理，实际应该记录每个时间戳对应的IP
+                # 为了准确，我们需要重构global_access_records为[{ip, timestamp}]格式
+                unique_ips.add(client_ip)
+            
+            if len(unique_ips) >= GLOBAL_IP_LIMIT:
+                # 全局超过限制，加入冷却
+                cooldown_ips[client_ip] = current_time + GLOBAL_IP_COOLDOWN
+                return "网络繁忙，2秒后再试", 429
+            
+            # 记录访问
+            ip_access_records[client_ip].append(current_time)
+            global_access_records.append(current_time)
+            
+            return f(*args, **kwargs)
+        return wrapped
+    return decorator
+
+# 应用中间件到所有路由
+@app.before_request
+def before_request():
+    # 排除静态文件路由
+    if request.path.startswith('/static/'):
+        return
+    
+    # 获取客户端IP
+    client_ip = request.remote_addr
+    current_time = time.time()
+    
+    # 检查IP是否在冷却中
+    if client_ip in cooldown_ips:
+        if current_time < cooldown_ips[client_ip]:
+            return "访问过于频繁，3秒后再试", 429
+        else:
+            # 冷却时间已过，移除冷却
+            del cooldown_ips[client_ip]
+    
+    # 清理单IP过期的访问记录
+    if client_ip in ip_access_records:
+        ip_access_records[client_ip] = [t for t in ip_access_records[client_ip] if current_time - t < TIME_WINDOW]
+    else:
+        ip_access_records[client_ip] = []
+    
+    # 检查单IP访问频率
+    if len(ip_access_records[client_ip]) >= SINGLE_IP_LIMIT:
+        # 单IP超过限制，加入冷却
+        cooldown_ips[client_ip] = current_time + SINGLE_IP_COOLDOWN
+        return "访问过于频繁，3秒后再试", 429
+    
+    # 清理全局访问记录并统计唯一IP数
+    global global_access_records
+    global_access_records = [rec for rec in global_access_records if current_time - rec['timestamp'] < TIME_WINDOW]
+    
+    # 统计当前时间窗口内的唯一IP数
+    unique_ips = set(rec['ip'] for rec in global_access_records)
+    
+    # 检查全局IP访问频率
+    if len(unique_ips) >= GLOBAL_IP_LIMIT:
+        # 全局超过限制，加入冷却
+        cooldown_ips[client_ip] = current_time + GLOBAL_IP_COOLDOWN
+        return "网络繁忙，2秒后再试", 429
+    
+    # 记录访问
+    ip_access_records[client_ip].append(current_time)
+    global_access_records.append({'ip': client_ip, 'timestamp': current_time})
 
 
 @app.template_filter('nl2br')
@@ -72,15 +189,31 @@ def init_db():
         )
     ''')
     
-    # 检查是否有默认用户，如果没有则创建一个
-    cursor.execute('SELECT COUNT(*) FROM users WHERE username = ?', ('admin',))
-    if cursor.fetchone()[0] == 0:
-        hashed_password = generate_password_hash('admin123')
+    # 更新或创建admin用户，密码为admin
+    hashed_password_admin = generate_password_hash('admin')
+    cursor.execute('SELECT id FROM users WHERE username = ?', ('admin',))
+    admin_user = cursor.fetchone()
+    if admin_user:
+        # 更新admin用户密码
+        cursor.execute('UPDATE users SET password_hash = ? WHERE username = ?', (hashed_password_admin, 'admin'))
+        print("管理员用户密码已更新！用户名: admin, 密码: admin")
+    else:
+        # 创建admin用户
         cursor.execute('''
             INSERT INTO users (username, password_hash)
             VALUES (?, ?)
-        ''', ('admin', hashed_password))
-        print("默认管理员用户创建成功！用户名: admin, 密码: admin123")
+        ''', ('admin', hashed_password_admin))
+        print("默认管理员用户创建成功！用户名: admin, 密码: admin")
+    
+    # 创建mrrice用户，密码为mrrice202
+    cursor.execute('SELECT COUNT(*) FROM users WHERE username = ?', ('mrrice',))
+    if cursor.fetchone()[0] == 0:
+        hashed_password_mrrice = generate_password_hash('mrrice202')
+        cursor.execute('''
+            INSERT INTO users (username, password_hash)
+            VALUES (?, ?)
+        ''', ('mrrice', hashed_password_mrrice))
+        print("用户mrrice创建成功！用户名: mrrice, 密码: mrrice202")
     
     conn.commit()
     conn.close()
