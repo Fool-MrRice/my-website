@@ -1,10 +1,14 @@
 # mrrice的二手交易系统 - 部署指南
 
 ## 技术栈
-- Python 3.x
-- Flask 2.3.3
-- SQLite 数据库
-- Werkzeug 2.3.7
+- **后端框架**: Flask 2.3.3 (轻量级Python Web框架)
+- **数据库**: SQLite (嵌入式关系型数据库，适合小型应用)
+- **Python版本**: 3.9+ (推荐使用3.10或3.11)
+- **核心依赖**: 
+  - Werkzeug 2.3.7 (WSGI工具库)
+  - 标准Python库 (os, re, time, datetime, uuid等)
+- **前端技术**: HTML5, CSS3, JavaScript (原生)
+- **模板引擎**: Jinja2 (Flask内置)
 
 ## 部署平台选择
 推荐使用 **PythonAnywhere** 作为免费部署平台，原因如下：
