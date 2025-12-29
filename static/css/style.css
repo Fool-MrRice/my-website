@@ -1,0 +1,473 @@
+/* 全局样式 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* 头部样式 */
+.header {
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 20px;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.nav {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    text-decoration: none;
+    color: #666;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.nav-link:hover {
+    color: #2c3e50;
+}
+
+/* 主要内容区域 */
+.main {
+    min-height: calc(100vh - 140px);
+    padding: 2rem 0;
+}
+
+/* 首页样式 */
+.hero {
+    text-align: center;
+    padding: 3rem 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 12px;
+    margin-bottom: 3rem;
+}
+
+.hero h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+.content-list h3 {
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+}
+
+.contents {
+    display: grid;
+    gap: 1.5rem;
+}
+
+.content-card {
+    background: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.content-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.content-title {
+    font-size: 1.3rem;
+    margin-bottom: 0.5rem;
+}
+
+.content-title a {
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.content-title a:hover {
+    color: #667eea;
+}
+
+.content-meta {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.9rem;
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.content-excerpt a {
+    color: #667eea;
+    text-decoration: none;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #666;
+}
+
+/* 内容详情页样式 */
+.content-detail {
+    background: white;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+}
+
+.content-header {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+}
+
+.content-title-large {
+    font-size: 2.5rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+    line-height: 1.2;
+}
+
+.content-body {
+    font-size: 1.1rem;
+    line-height: 1.8;
+}
+
+.content-text {
+    color: #444;
+}
+
+.content-text p {
+    margin-bottom: 1.5rem;
+}
+
+/* 登录页面样式 */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 60vh;
+}
+
+.login-form-wrapper {
+    background: white;
+    padding: 3rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-form-wrapper h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+    color: #2c3e50;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.flash-messages {
+    margin-bottom: 1.5rem;
+}
+
+.flash-message {
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
+}
+
+.flash-message.error {
+    background-color: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+/* 按钮样式 */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #5a6fd8;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+.btn-edit {
+    background-color: #28a745;
+    color: white;
+}
+
+.btn-edit:hover {
+    background-color: #218838;
+}
+
+.btn-delete {
+    background-color: #dc3545;
+    color: white;
+}
+
+.btn-delete:hover {
+    background-color: #c82333;
+}
+
+/* 管理后台样式 */
+.admin-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.admin-header h2 {
+    color: #2c3e50;
+}
+
+.admin-actions {
+    margin-bottom: 2rem;
+}
+
+.content-management {
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.content-table-wrapper {
+    overflow-x: auto;
+}
+
+.content-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.content-table th,
+.content-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.content-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.content-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.content-title-cell a {
+    color: #2c3e50;
+    text-decoration: none;
+}
+
+.content-title-cell a:hover {
+    color: #667eea;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+/* 模态框样式 */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    width: 90%;
+    max-width: 600px;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.modal-header h3 {
+    color: #2c3e50;
+}
+
+.close {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.close:hover {
+    color: #333;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+}
+
+/* 登录信息提示 */
+.login-info {
+    margin-top: 2rem;
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+    font-size: 0.9rem;
+}
+
+.login-info p {
+    margin-bottom: 0.5rem;
+}
+
+.login-info code {
+    background-color: #e9ecef;
+    padding: 0.2rem 0.4rem;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+}
+
+.login-info .tip {
+    color: #dc3545;
+    font-weight: 500;
+}
+
+/* 页脚样式 */
+.footer {
+    background-color: #2c3e50;
+    color: white;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .header .container {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .hero h2 {
+        font-size: 2rem;
+    }
+    
+    .content-title-large {
+        font-size: 2rem;
+    }
+    
+    .content-detail {
+        padding: 2rem;
+    }
+    
+    .actions {
+        flex-direction: column;
+    }
+    
+    .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的网站 - 内容管理系统</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">我的网站</h1>
+            <nav class="nav">
+                <a href="/" class="nav-link">首页</a>
+                <a href="/admin" class="nav-link">管理后台</a>
+                <a href="/login" class="nav-link">登录</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <section class="hero">
+                <h2>欢迎来到我的内容管理系统</h2>
+                <p>这里展示所有已发布的内容，您可以自由浏览感兴趣的文章。</p>
+            </section>
+
+            <section class="content-list">
+                <h3>最新内容</h3>
+                <div class="contents">
+                    {% if contents %}
+                        {% for content in contents %}
+                        <article class="content-card">
+                            <h4 class="content-title">
+                                <a href="/content/{{ content[0] }}">{{ content[1] }}</a>
+                            </h4>
+                            <div class="content-meta">
+                                <span class="author">作者：{{ content[2] }}</span>
+                                <span class="date">发布时间：{{ content[3] }}</span>
+                            </div>
+                            <p class="content-excerpt">
+                                <a href="/content/{{ content[0] }}">阅读全文 →</a>
+                            </p>
+                        </article>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <p>暂无内容，管理员可以在后台添加新内容。</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 我的网站. 保留所有权利.</p>
+        </div>
+    </footer>
+</body>
+</html>
