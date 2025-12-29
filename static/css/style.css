@@ -471,3 +471,164 @@ body {
         gap: 1rem;
     }
 }
+
+/* 图片相关样式 */
+
+/* 首页商品卡片图片 */
+.content-image-container {
+    margin-bottom: 1rem;
+    height: 200px;
+    overflow: hidden;
+    border-radius: 6px;
+    background-color: #f8f9fa;
+}
+
+.content-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s;
+}
+
+.content-card:hover .content-image {
+    transform: scale(1.05);
+}
+
+/* 无图占位符 */
+.no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f8f9fa;
+    border: 1px dashed #ddd;
+    border-radius: 6px;
+}
+
+.no-image-link {
+    color: #666;
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.no-image-link:hover {
+    color: #667eea;
+}
+
+/* 详情页图片样式 */
+.content-images {
+    margin-bottom: 2rem;
+}
+
+.images-title {
+    font-size: 1.3rem;
+    color: #2c3e50;
+    margin-bottom: 1rem;
+}
+
+.images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+}
+
+.image-item {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s;
+}
+
+.image-item:hover {
+    transform: translateY(-2px);
+}
+
+.detail-image {
+    width: 100%;
+    height: 250px;
+    object-fit: cover;
+}
+
+.no-image-large {
+    text-align: center;
+    padding: 3rem;
+    background-color: #f8f9fa;
+    border: 1px dashed #ddd;
+    border-radius: 8px;
+    color: #666;
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+/* 管理后台图片上传样式 */
+.image-upload-section {
+    margin-top: 0.5rem;
+}
+
+.image-upload-hint {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.image-preview-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.image-preview-item {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.image-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.image-delete-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(220, 53, 69, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.image-delete-btn:hover {
+    background-color: rgba(192, 35, 51, 0.9);
+}
+
+/* 优化响应式图片显示 */
+@media (max-width: 768px) {
+    .content-image-container {
+        height: 180px;
+    }
+    
+    .images-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+    
+    .detail-image {
+        height: 200px;
+    }
+}

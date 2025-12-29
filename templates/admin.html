@@ -90,6 +90,14 @@
                         <label for="contentBody">内容</label>
                         <textarea id="contentBody" rows="10" required></textarea>
                     </div>
+                    <div class="form-group">
+                        <label for="imageUpload">商品图片（最多5张）</label>
+                        <div class="image-upload-section">
+                            <input type="file" id="imageUpload" accept="image/*" multiple>
+                            <div class="image-preview-container" id="imagePreviewContainer"></div>
+                            <p class="image-upload-hint">支持PNG、JPG、JPEG、GIF格式，最多5张</p>
+                        </div>
+                    </div>
                     <div class="form-actions">
                         <button type="submit" class="btn btn-primary">保存</button>
                         <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>

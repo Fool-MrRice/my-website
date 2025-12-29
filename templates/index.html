@@ -26,11 +26,22 @@
             </section>
 
             <section class="content-list">
-                <h3>最新交易记录</h3>
+                <h3>最新待售物品</h3>
                 <div class="contents">
                     {% if contents %}
                         {% for content in contents %}
                         <article class="content-card">
+                            <div class="content-image-container">
+                                {% if content[4] %}
+                                    <a href="/content/{{ content[0] }}">
+                                        <img src="/static/uploads/{{ content[4] }}" alt="{{ content[1] }}" class="content-image">
+                                    </a>
+                                {% else %}
+                                    <div class="no-image">
+                                        <a href="/content/{{ content[0] }}" class="no-image-link">此商品暂时无图</a>
+                                    </div>
+                                {% endif %}
+                            </div>
                             <h4 class="content-title">
                                 <a href="/content/{{ content[0] }}">{{ content[1] }}</a>
                             </h4>
@@ -39,7 +50,7 @@
                                 <span class="date">发布时间：{{ content[3] }}</span>
                             </div>
                             <p class="content-excerpt">
-                                <a href="/content/{{ content[0] }}">阅读全文 →</a>
+                                <a href="/content/{{ content[0] }}">商品详情 →</a>
                             </p>
                         </article>
                         {% endfor %}

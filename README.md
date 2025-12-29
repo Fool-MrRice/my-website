@@ -9,11 +9,14 @@
 - **内容展示**：前端内容列表和详情页
 - **响应式设计**：支持移动端和桌面端
 - **RESTful API**：前后端分离的API设计
+- **图片管理**：上传、删除、排序内容图片
+- **图片展示**：内容详情页图片轮播展示
 
 ## 🛠 技术栈
 
 - **后端**：Python Flask
 - **数据库**：SQLite
+- **工具库**：Werkzeug (用于密码哈希和文件上传)
 - **前端**：HTML5 + CSS3 + JavaScript
 - **样式**：CSS Grid + Flexbox
 
@@ -52,12 +55,13 @@ my-website/
 ├── database.db        # SQLite数据库
 ├── requirements.txt   # Python依赖包
 ├── README.md         # 项目说明文档
-├── static/           # 静态文件目录
-│   ├── css/
-│   │   └── style.css # 样式文件
-│   └── js/
-│       └── main.js   # JavaScript交互逻辑
-└── templates/        # HTML模板
+└── static/           # 静态文件目录
+    ├── css/
+    │   └── style.css # 样式文件
+    ├── js/
+    │   └── main.js   # JavaScript交互逻辑
+    └── uploads/      # 上传的图片目录
+├── templates/        # HTML模板
     ├── index.html    # 首页（内容列表）
     ├── content.html  # 内容详情页
     ├── admin.html    # 管理后台
@@ -72,6 +76,12 @@ my-website/
 - `POST /api/contents` - 创建内容
 - `PUT /api/contents/<id>` - 更新内容
 - `DELETE /api/contents/<id>` - 删除内容
+
+### 图片管理
+
+- `GET /api/contents/<id>/images` - 获取内容的图片列表
+- `POST /api/contents/<id>/images` - 上传内容图片
+- `DELETE /api/images/<id>` - 删除图片
 
 ### 页面路由
 
@@ -89,11 +99,12 @@ my-website/
 2. **创建内容**：点击"新建内容"按钮，填写标题和内容
 3. **编辑内容**：点击内容列表中的"编辑"按钮
 4. **删除内容**：点击"删除"按钮，确认后删除内容
+5. **管理图片**：在编辑内容时上传、删除、排序图片
 
 ### 访客功能
 
-1. **浏览内容列表**：首页展示所有已发布的内容
-2. **查看内容详情**：点击标题或"阅读全文"查看完整内容
+1. **浏览内容列表**：首页展示所有已发布的内容及缩略图
+2. **查看内容详情**：点击标题或"阅读全文"查看完整内容和图片轮播
 
 ## 🔒 安全建议
 
@@ -162,8 +173,16 @@ CMD ["python", "server.py"]
 
 1. **用户注册**：在 `server.py` 中添加注册路由
 2. **内容分类**：在数据库中添加分类字段
-3. **文件上传**：集成文件上传功能
+3. **文件上传**：已集成文件上传功能
 4. **搜索功能**：添加内容搜索API
+
+### 图片上传配置
+
+在 `server.py` 中可以配置以下图片上传参数：
+
+- `UPLOAD_FOLDER`：图片上传目录，默认为 `static/uploads`
+- `ALLOWED_EXTENSIONS`：允许上传的图片格式，默认为 `{'png', 'jpg', 'jpeg', 'gif'}`
+- 图片数量限制：每个内容最多上传5张图片
 
 ## 🐛 常见问题
 

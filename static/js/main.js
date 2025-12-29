@@ -1,18 +1,23 @@
 // 全局变量
 let currentEditingId = null;
+let uploadedImages = [];
 
 // 显示创建内容的模态框
 function showCreateModal() {
     currentEditingId = null;
+    uploadedImages = [];
     document.getElementById('modalTitle').textContent = '新建内容';
     document.getElementById('contentTitle').value = '';
     document.getElementById('contentBody').value = '';
     document.getElementById('contentModal').style.display = 'block';
+    clearImagePreview();
+    setupImageUpload();
 }
 
 // 编辑内容
 function editContent(id) {
     currentEditingId = id;
+    uploadedImages = [];
     
     // 获取内容数据
     fetch(`/api/contents/${id}`)
@@ -21,7 +26,16 @@ function editContent(id) {
             document.getElementById('modalTitle').textContent = '编辑内容';
             document.getElementById('contentTitle').value = data.title;
             document.getElementById('contentBody').value = data.content;
+            
+            // 获取已上传的图片
+            return fetch(`/api/contents/${id}/images`);
+        })
+        .then(response => response.json())
+        .then(data => {
+            uploadedImages = data.images || [];
+            updateImagePreview();
             document.getElementById('contentModal').style.display = 'block';
+            setupImageUpload();
         })
         .catch(error => {
             alert('获取内容失败：' + error.message);
@@ -51,13 +65,118 @@ function deleteContent(id) {
 function closeModal() {
     document.getElementById('contentModal').style.display = 'none';
     currentEditingId = null;
+    uploadedImages = [];
+    clearImagePreview();
+}
+
+// 设置图片上传
+function setupImageUpload() {
+    const imageUpload = document.getElementById('imageUpload');
+    if (imageUpload) {
+        imageUpload.addEventListener('change', handleImageSelection);
+    }
+}
+
+// 处理图片选择
+function handleImageSelection(e) {
+    const files = Array.from(e.target.files);
+    
+    // 检查图片数量限制
+    if (uploadedImages.length + files.length > 5) {
+        alert('最多只能上传5张图片！');
+        e.target.value = ''; // 清空选择
+        return;
+    }
+    
+    // 显示图片预览
+    files.forEach(file => {
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const preview = {
+                    id: null, // 新上传的图片没有ID
+                    filename: file.name,
+                    previewUrl: event.target.result,
+                    file: file
+                };
+                uploadedImages.push(preview);
+                updateImagePreview();
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+    
+    e.target.value = ''; // 清空选择，允许重新选择相同文件
+}
+
+// 清除图片预览
+function clearImagePreview() {
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    if (previewContainer) {
+        previewContainer.innerHTML = '';
+    }
+}
+
+// 更新图片预览
+function updateImagePreview() {
+    const previewContainer = document.getElementById('imagePreviewContainer');
+    if (!previewContainer) return;
+    
+    previewContainer.innerHTML = '';
+    
+    uploadedImages.forEach((image, index) => {
+        const previewItem = document.createElement('div');
+        previewItem.className = 'image-preview-item';
+        
+        const img = document.createElement('img');
+        img.src = image.previewUrl || `/static/uploads/${image.filename}`;
+        img.alt = `图片 ${index + 1}`;
+        img.className = 'image-preview';
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'image-delete-btn';
+        deleteBtn.textContent = '×';
+        deleteBtn.onclick = () => deleteImagePreview(index);
+        
+        previewItem.appendChild(img);
+        previewItem.appendChild(deleteBtn);
+        previewContainer.appendChild(previewItem);
+    });
+}
+
+// 删除图片预览
+function deleteImagePreview(index) {
+    const image = uploadedImages[index];
+    
+    if (image.id) {
+        // 如果是已上传的图片，需要调用API删除
+        if (confirm('确定要删除这张图片吗？')) {
+            fetch(`/api/images/${image.id}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    uploadedImages.splice(index, 1);
+                    updateImagePreview();
+                }
+            })
+            .catch(error => {
+                alert('删除图片失败：' + error.message);
+            });
+        }
+    } else {
+        // 如果是还未上传的图片，直接从预览中删除
+        uploadedImages.splice(index, 1);
+        updateImagePreview();
+    }
 }
 
 // 表单提交处理
 document.addEventListener('DOMContentLoaded', function() {
     const contentForm = document.getElementById('contentForm');
     if (contentForm) {
-        contentForm.addEventListener('submit', function(e) {
+        contentForm.addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const title = document.getElementById('contentTitle').value.trim();
@@ -68,32 +187,57 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            const url = currentEditingId ? `/api/contents/${currentEditingId}` : '/api/contents';
-            const method = currentEditingId ? 'PUT' : 'POST';
-            
-            fetch(url, {
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    title: title,
-                    content: content
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.message) {
-                    alert(data.message);
-                    closeModal();
-                    location.reload(); // 刷新页面
-                } else if (data.error) {
-                    alert('错误：' + data.error);
+            try {
+                // 保存内容（标题和正文）
+                const contentUrl = currentEditingId ? `/api/contents/${currentEditingId}` : '/api/contents';
+                const contentMethod = currentEditingId ? 'PUT' : 'POST';
+                
+                const contentResponse = await fetch(contentUrl, {
+                    method: contentMethod,
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        title: title,
+                        content: content
+                    })
+                });
+                
+                const contentData = await contentResponse.json();
+                if (contentData.error) {
+                    throw new Error(contentData.error);
                 }
-            })
-            .catch(error => {
+                
+                // 获取内容ID（新创建的或已存在的）
+                const contentId = currentEditingId || (contentResponse.status === 201 ? 
+                    // 从创建响应中直接获取新创建的ID
+                    contentData.id : 
+                    currentEditingId);
+                
+                // 上传新图片（只有file属性的才是新图片）
+                const newImages = uploadedImages.filter(img => img.file);
+                for (const image of newImages) {
+                    const formData = new FormData();
+                    formData.append('file', image.file);
+                    
+                    const imageResponse = await fetch(`/api/contents/${contentId}/images`, {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    const imageData = await imageResponse.json();
+                    if (imageData.error) {
+                        throw new Error(imageData.error);
+                    }
+                }
+                
+                // 操作成功
+                alert('内容保存成功！');
+                closeModal();
+                location.reload(); // 刷新页面
+            } catch (error) {
                 alert('操作失败：' + error.message);
-            });
+            }
         });
     }
     

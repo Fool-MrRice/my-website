@@ -33,6 +33,24 @@
                 </header>
                 
                 <div class="content-body">
+                    <!-- 图片展示区域 -->
+                    <div class="content-images">
+                        {% if images and images|length > 0 %}
+                            <h3 class="images-title">商品图片</h3>
+                            <div class="images-grid">
+                                {% for image in images %}
+                                    <div class="image-item">
+                                        <img src="/static/uploads/{{ image[0] }}" alt="{{ content[1] }}" class="detail-image">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            <div class="no-image-large">
+                                <p>此商品暂时无图</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                    
                     <div class="content-text">
                         {{ content[2]|nl2br }}
                     </div>
