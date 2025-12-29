@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的网站 - 内容管理系统</title>
+    <title>mrrice的2手交易系统</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <h1 class="logo">我的网站</h1>
+            <h1 class="logo">mrrice的网站</h1>
             <nav class="nav">
                 <a href="/" class="nav-link">首页</a>
                 <a href="/admin" class="nav-link">管理后台</a>
@@ -21,12 +21,12 @@
     <main class="main">
         <div class="container">
             <section class="hero">
-                <h2>欢迎来到我的内容管理系统</h2>
-                <p>这里展示所有已发布的内容，您可以自由浏览感兴趣的文章。</p>
+                <h2>欢迎来到mrrice的2手交易系统</h2>
+                <p>这里展示所有已发布的需要交易的商品，您可以自由浏览感兴趣的交易。需要联系mrrice进行交易。</p>
             </section>
 
             <section class="content-list">
-                <h3>最新内容</h3>
+                <h3>最新交易记录</h3>
                 <div class="contents">
                     {% if contents %}
                         {% for content in contents %}
@@ -55,7 +55,7 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 我的网站. 保留所有权利.</p>
+            <p>&copy; 2025 mrrice的网站. 保留所有权利.</p>
         </div>
     </footer>
 </body>

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-全栈内容管理系统 - 安装和初始化脚本
+mrrice的2手交易系统 - 安装和初始化脚本
 """
 
 import sys
@@ -35,7 +35,7 @@ def init_database():
 def main():
     """主函数"""
     print("=" * 50)
-    print("全栈内容管理系统 - 安装向导")
+    print("mrrice的2手交易系统 - 安装向导")
     print("=" * 50)
     
     # 1. 安装依赖

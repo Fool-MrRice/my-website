@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>管理后台 - 我的网站</title>
+    <title>管理后台 - mrrice的网站</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
+
 <body>
     <header class="header">
         <div class="container">
@@ -30,39 +32,42 @@
 
             <div class="content-management">
                 {% if contents %}
-                    <div class="content-table-wrapper">
-                        <table class="content-table">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>标题</th>
-                                    <th>作者</th>
-                                    <th>发布时间</th>
-                                    <th>操作</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for content in contents %}
-                                <tr data-id="{{ content[0] }}">
-                                    <td>{{ content[0] }}</td>
-                                    <td class="content-title-cell">
-                                        <a href="/content/{{ content[0] }}" target="_blank">{{ content[1] }}</a>
-                                    </td>
-                                    <td>{{ content[3] }}</td>
-                                    <td>{{ content[4] }}</td>
-                                    <td class="actions">
-                                        <button class="btn btn-sm btn-edit" onclick="editContent({{ content[0] }})">编辑</button>
-                                        <button class="btn btn-sm btn-delete" onclick="deleteContent({{ content[0] }})">删除</button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="content-table-wrapper">
+                    <table class="content-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>标题</th>
+                                <th>作者</th>
+                                <th>发布时间</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for content in contents %}
+                            <tr data-id="{{ content[0] }}">
+                                <td>{{ content[0] }}</td>
+                                <td class="content-title-cell">
+                                    <a href="/content/{{ content[0] }}" target="_blank">{{ content[1] }}</a>
+                                </td>
+                                <td>{{ content[3] }}</td>
+                                <td>{{ content[4] }}</td>
+                                <td class="actions">
+                                    <button class="btn btn-sm btn-edit"
+                                        onclick="editContent({{ content[0] }})">编辑</button>
+
+                                    <button class="btn btn-sm btn-delete"
+                                        onclick="deleteContent({{ content[0] }})">删除</button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
                 {% else %}
-                    <div class="empty-state">
-                        <p>暂无内容，点击"新建内容"开始创建。</p>
-                    </div>
+                <div class="empty-state">
+                    <p>暂无内容，点击"新建内容"开始创建。</p>
+                </div>
                 {% endif %}
             </div>
         </div>
@@ -96,10 +101,11 @@
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2025 我的网站. 保留所有权利.</p>
+            <p>&copy; 2025 mrrcie的网站. 保留所有权利.</p>
         </div>
     </footer>
 
     <script src="{{ url_for('static', filename='js/main.js') }}"></script>
 </body>
+
 </html>
